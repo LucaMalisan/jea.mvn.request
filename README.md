@@ -1,2 +1,2 @@
 # jea.mvn.request
-Maven Repo with utils for HttpRequests
+Maven Repository for common tasks referring to requests
