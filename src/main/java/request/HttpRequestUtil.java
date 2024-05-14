@@ -1,7 +1,6 @@
 package request;
 
 import header.HeaderFields;
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.java.Log;
 
 import java.io.BufferedReader;
@@ -31,7 +30,7 @@ public class HttpRequestUtil {
             con.setRequestProperty(HeaderFields.AUTHORIZATION, base64AuthorizationHeader);
 
             //payload
-            if (!StringUtils.isEmpty(data)) {
+            if (data != null && !data.isEmpty()) {
                 createBody(con, data);
             }
 
@@ -71,7 +70,7 @@ public class HttpRequestUtil {
             con.disconnect();
 
             if (con.getResponseCode() >= 300) {
-                log.severe("Getting JWT token failed with message: " + con.getResponseMessage());
+                log.severe("Request returned the following status: " + con.getResponseMessage());
             }
 
             return content.toString();
