@@ -1,6 +1,5 @@
 package request;
 
-import header.HeaderFields;
 import lombok.extern.java.Log;
 
 import java.io.BufferedReader;
