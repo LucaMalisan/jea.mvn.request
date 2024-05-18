@@ -2,10 +2,7 @@ package request;
 
 import lombok.extern.java.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
@@ -59,7 +56,7 @@ public class HttpRequestUtil {
      * Reads the response and stringifies it
      */
 
-    protected static String stringifyResponse(HttpURLConnection con) throws IOException {
+    protected static String stringifyResponse(HttpURLConnection con) {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
             String inputLine;
             StringBuilder content = new StringBuilder();
@@ -73,6 +70,22 @@ public class HttpRequestUtil {
             }
 
             return content.toString();
+        } catch (FileNotFoundException e) {
+            try {
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                con.disconnect();
+                log.severe(content.toString());
+            } catch (IOException ex) {
+                log.severe("Got an IOException: " + ex.getMessage());
+            }
+        } catch (IOException e) {
+            log.severe("Got an IOException: " + e.getMessage());
         }
+        return null;
     }
 }
