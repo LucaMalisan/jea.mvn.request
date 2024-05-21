@@ -19,10 +19,6 @@ public class HttpRequestUtil {
 
         String base64AuthorizationHeader = "";
 
-        if (headers.get(HeaderFields.AUTHORIZATION) != null) {
-            base64AuthorizationHeader = HeaderFields.BASIC_PREFIX + Base64.getEncoder().encodeToString(headers.get(HeaderFields.AUTHORIZATION).getBytes());
-        }
-
         try {
             URL url = new URL(urlStr);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -32,7 +28,12 @@ public class HttpRequestUtil {
             con.setRequestProperty(HeaderFields.AUTHORIZATION, base64AuthorizationHeader);
 
             for (Map.Entry<String, String> header : headers.entrySet()) {
-                con.setRequestProperty(header.getKey(), header.getValue());
+                if (header.getKey().equals(HeaderFields.AUTHORIZATION)) {
+                    base64AuthorizationHeader = HeaderFields.BASIC_PREFIX + Base64.getEncoder().encodeToString(headers.get(HeaderFields.AUTHORIZATION).getBytes());
+                    con.setRequestProperty(header.getKey(), base64AuthorizationHeader);
+                } else {
+                    con.setRequestProperty(header.getKey(), header.getValue());
+                }
             }
 
             //payload
