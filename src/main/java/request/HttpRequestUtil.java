@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Map;
 
 @Log
 public class HttpRequestUtil {
@@ -13,9 +14,14 @@ public class HttpRequestUtil {
     private HttpRequestUtil() {
     }
 
-    public static String createHttpRequestAndGetResponse(String urlStr, String method, String authorization, String data) {
+    public static String createHttpRequestAndGetResponse(String urlStr, String method, String data, Map<String, String> headers) {
 
-        String base64AuthorizationHeader = HeaderFields.BASIC_PREFIX + Base64.getEncoder().encodeToString(authorization.getBytes());
+
+        String base64AuthorizationHeader = "";
+
+        if (headers.get(HeaderFields.AUTHORIZATION) != null) {
+            base64AuthorizationHeader = HeaderFields.BASIC_PREFIX + Base64.getEncoder().encodeToString(headers.get(HeaderFields.AUTHORIZATION).getBytes());
+        }
 
         try {
             URL url = new URL(urlStr);
@@ -24,6 +30,10 @@ public class HttpRequestUtil {
             //header
             con.setRequestMethod(method);
             con.setRequestProperty(HeaderFields.AUTHORIZATION, base64AuthorizationHeader);
+
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                con.setRequestProperty(header.getKey(), header.getValue());
+            }
 
             //payload
             if (data != null && !data.isEmpty()) {
