@@ -6,7 +6,7 @@
 
   <groupId>jea</groupId>
   <artifactId>mvn.request</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
 
   <properties>
     <maven.compiler.source>18</maven.compiler.source>
